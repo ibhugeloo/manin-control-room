@@ -22,25 +22,17 @@ There's no separate "AI memory" to keep in sync — I edit a note, the assistant
 That vault is mirrored nightly to **git**, which is the **canon**. When the vault, a laptop,
 and Notion disagree, git wins. Everything else is a consumer of that canon:
 
-```
-                     ┌───────────────────────────┐
-   I edit as human → │    Obsidian vault (.md)    │ → @import into Claude Code
-                     │    atelier + live memory   │
-                     └─────────────┬─────────────┘
-                                   │  memory-sync (nightly mirror)
-                                   ▼
-                     ┌───────────────────────────┐
-                     │   git repo  =  THE CANON   │
-                     │   dated · versioned · append-only
-                     └───┬───────────┬───────────┬┘
-              @import HOT │   read-only clone     │ recap push
-                         ▼            ▼           ▼
-                ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-                │  JARVIS  │  │   LEO    │  │  ALFRED  │  │  Notion  │
-                │ ClaudeCode  │  Hermes  │  │  sysadmin│  │  mirror  │
-                │  (Mac)   │  │ (phone)  │  │ (homelab)│  │ (mobile) │
-                │  builder │  │contrarian│  │  ops     │  │ optional │
-                └──────────┘  └──────────┘  └──────────┘  └──────────┘
+```mermaid
+flowchart TD
+    Me(["👤 Me — edit as a human"]) -->|write| V["🗂️ Obsidian vault (.md)<br/>atelier + live memory"]
+    V -->|"@import (HOT files)"| J["🤖 JARVIS<br/>Claude Code · Mac<br/>builder"]
+    V -->|"memory-sync · nightly mirror"| G[("🔒 git repo = THE CANON<br/>dated · versioned · append-only")]
+    G -->|read-only clone| L["📱 LEO<br/>Hermes · phone<br/>contrarian"]
+    G -.->|read-only| A["🖥️ ALFRED<br/>homelab · sysadmin"]
+    J <-->|debate · I decide| L
+    J -->|session recaps| N["📓 Notion<br/>mirror · mobile · optional"]
+    classDef canon fill:#1f2937,stroke:#f59e0b,color:#fff;
+    class G canon;
 ```
 
 The brain doesn't move. The runtimes are swappable.
@@ -114,14 +106,24 @@ A typical day:
    "dreaming" pass consolidates. **Promotions to persona files need my explicit yes** — silence
    is never consent.
 
+That client pipeline (step 3) is gated end to end — I confirm each phase before the next, and
+nothing ships or deploys without an explicit yes:
+
+```mermaid
+flowchart LR
+    R[Research] -->|gate| P[Plan] -->|gate| E[Execute] -->|gate| Rv[Review] -->|"gate + your yes"| Sh[Ship]
+```
+
 ### How a habit becomes doctrine
 
 This is the loop that keeps the brain from rotting:
 
-```
-observed in sessions  →  scored over cycles  →  auto-written to a probation folder
-       →  survives + I validate  →  promoted into HOT/WARM doctrine (dated in the log)
-       →  unused for N days  →  auto-purged
+```mermaid
+flowchart LR
+    O["observed in<br/>sessions"] --> S["scored over<br/>cycles"]
+    S --> P["auto-written to<br/>probation folder"]
+    P -->|"survives + I validate"| D["promoted to HOT/WARM<br/>doctrine · dated in log"]
+    P -->|"unused N days"| X["auto-purged"]
 ```
 
 Low-risk skills auto-write themselves into an audited probation folder. Anything that changes
