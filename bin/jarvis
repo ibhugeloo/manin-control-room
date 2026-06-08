@@ -35,6 +35,9 @@ case "$CMD" in
   leo-sync)
     exec "$BIN/jarvis-leo-sync.sh" "$@"
     ;;
+  sessions-purge)
+    exec "$BIN/jarvis-sessions-purge.sh" "$@"
+    ;;
   status)
     exec "$BIN/jarvis-status" "$@"
     ;;
@@ -58,7 +61,8 @@ ROUTINES PRINCIPALES (consomment Anthropic)
   jarvis leo-sync     — récap Leo (Telegram, GPT-5.5) -> vault Brief/leo-feed.md (auto 23h)
 
 UTILITAIRES (locaux)
-  jarvis status       — inventaire projets GIT PROD/
+  jarvis status          — inventaire projets GIT PROD/
+  jarvis sessions-purge  — archive Notion + purge les recaps de session >90j
 
 Toutes les routines listées ci-dessus étaient des LaunchAgents auto avant 2026-05-14.
 Désormais : exécution manuelle uniquement. Plists archivés dans
