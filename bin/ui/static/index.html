@@ -1197,6 +1197,93 @@ header {
   margin-top: 4px;
 }
 
+/* Télémétrie */
+.tele-sub {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 16px 0 7px;
+}
+.tele-sub:first-child { margin-top: 2px; }
+.tele-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 0;
+  font-size: 12.5px;
+  color: var(--ink);
+}
+.tele-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tele-val {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.tele-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  min-width: 64px;
+  text-align: right;
+}
+.tdot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  display: inline-block;
+  background: var(--pale-green-fg);
+}
+.tdot-yellow { background: var(--pale-yellow-fg); }
+.tdot-orange { background: #d98324; }
+.tdot-red    { background: var(--pale-red-fg); }
+/* Mini-jauge HOT / caps */
+.tele-bar {
+  position: relative;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--border);
+  overflow: hidden;
+  margin: 7px 0 2px;
+}
+.tele-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 9999px;
+  background: var(--ink-soft);
+}
+.tele-bar.warn > span { background: var(--pale-yellow-fg); }
+.tele-bar.over > span { background: var(--pale-red-fg); }
+.tele-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.tele-chip {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  background: var(--border);
+  padding: 3px 7px;
+  border-radius: 9999px;
+}
+.tele-muted {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  font-style: italic;
+}
+
 /* Brief preview — Lora pour la lisibilité dense (briefs, veille techniques) */
 .brief-preview {
   font-family: var(--serif-read);
@@ -1719,7 +1806,15 @@ a:hover { border-bottom-color: var(--ink); }
     <!-- ============================================================== -->
     <!-- ZONE 4 — MÉMOIRE · règles persistantes et sessions Claude       -->
     <!-- ============================================================== -->
-    <h2 id="memory" class="zone-title"><span>Mémoire</span><span class="zone-hint">Règles persistantes · sessions Claude récentes</span></h2>
+    <h2 id="memory" class="zone-title"><span>Mémoire</span><span class="zone-hint">Télémétrie · règles persistantes · sessions Claude</span></h2>
+
+    <section class="card card-telemetry" style="animation-delay: 290ms">
+      <div class="card-label">
+        <span>Télémétrie</span>
+        <span id="telemetry-hot-tag" class="tag"></span>
+      </div>
+      <div id="telemetry-content"></div>
+    </section>
 
     <section class="card card-memory" style="animation-delay: 300ms">
       <div class="card-label">
@@ -2504,6 +2599,66 @@ function renderAgents(agents) {
   });
 }
 
+const TDOT_CLASS = {0: '', 1: 'tdot-yellow', 2: 'tdot-orange', 3: 'tdot-red'};
+function tdot(level) {
+  return `<span class="tdot ${TDOT_CLASS[level] || ''}"></span>`;
+}
+// plain=true → barre purement relative (taille), sans sémantique de seuil.
+function teleBar(pct, over, plain) {
+  const w = Math.min(100, Math.max(2, pct));
+  const cls = plain ? '' : (over ? 'over' : (pct >= 80 ? 'warn' : ''));
+  return `<div class="tele-bar ${cls}"><span style="width:${w}%"></span></div>`;
+}
+
+function renderTelemetry(t) {
+  const c = $('#telemetry-content');
+  if (!t || !t.memory) {
+    c.innerHTML = `<p class="card-empty">Télémétrie indisponible.</p>`;
+    return;
+  }
+  const m = t.memory;
+  const hotTag = $('#telemetry-hot-tag');
+  if (hotTag) hotTag.textContent = `HOT ${m.hot_total_kb} KB`;
+
+  const ctx = (t.contexts || []);
+  const ctxRows = ctx.length
+    ? ctx.map(s => `
+        <div class="tele-row">
+          ${tdot(s.level)}
+          <span class="tele-name" title="${escape(s.cwd)}">${escape(s.cwd_name)}</span>
+          <span class="tele-val">${s.transcript_mb} Mo</span>
+          <span class="tele-meta">${fmtRelative(Date.parse(s.last_activity) / 1000)}</span>
+        </div>`).join('')
+    : `<p class="tele-muted">Aucune session active.</p>`;
+
+  const hotMax = (m.hot_files || []).reduce((a, f) => Math.max(a, f.kb), 1);
+  const hotRows = (m.hot_files || []).map(f => `
+    <div class="tele-row">
+      <span class="tele-name">${escape(f.name)}</span>
+      <span class="tele-val">${f.kb} KB</span>
+    </div>
+    ${teleBar(Math.round(f.kb / hotMax * 100), false, true)}`).join('');
+
+  const guardPct = Math.round(m.guard_count / m.guard_max * 100);
+  const warmRows = (m.warm_top || []).length
+    ? (m.warm_top || []).map(w => `<span class="tele-chip">${escape(w.tier)} · ${w.hits}</span>`).join('')
+    : `<span class="tele-muted">aucun hit enregistré</span>`;
+
+  c.innerHTML = `
+    <div class="tele-sub">Contextes · sessions live (${ctx.length})</div>
+    ${ctxRows}
+    <div class="tele-sub">Mémoire HOT auto-load · ${m.hot_total_kb} KB</div>
+    ${hotRows}
+    <div class="tele-sub">Garde-fous Memory/</div>
+    <div class="tele-row"><span class="tele-name">Fichiers top-level</span><span class="tele-val">${m.guard_count} / ${m.guard_max}</span></div>
+    ${teleBar(guardPct, false)}
+    <div class="tele-row"><span class="tele-name">Fichiers au-delà du cap</span><span class="tele-val">${m.guard_over}</span></div>
+    <div class="tele-row"><span class="tele-name">Skills auto/ promus</span><span class="tele-val">${m.skills_auto}</span></div>
+    <div class="tele-sub">WARM/COLD · usage observé</div>
+    <div class="tele-chips">${warmRows}</div>
+  `;
+}
+
 function renderSessions(sessions) {
   const c = $('#sessions-content');
   if (sessions.length === 0) {
@@ -2880,11 +3035,13 @@ async function refresh() {
       fetch('/api/watchtower').then(r => r.json()),
       fetch('/api/subagents').then(r => r.json()).catch(() => ({ agents: [], running_count: 0, total: 0 })),
       fetch('/api/mos').then(r => r.json()).catch(() => ({ daemon_up: false, missions: [], events: [], error: 'fetch failed' })),
+      fetch('/api/telemetry').then(r => r.json()).catch(() => null),
     ];
     if (!actionsLoaded) promises.push(fetch('/api/actions').then(r => r.json()));
 
     const results = await Promise.all(promises);
-    const [repos, agents, briefs, sessions, telegram, logs, domains, watchtower, subagents, mos, actions] = results;
+    const [repos, agents, briefs, sessions, telegram, logs, domains, watchtower, subagents, mos, telemetry, actions] = results;
+    renderTelemetry(telemetry);
     renderSubagentsSummary(subagents);
     briefData = briefs;
     renderBrief();

@@ -586,6 +586,116 @@ def read_memory_file(filename: str, in_proposed: bool = False) -> dict:
         return {"ok": False, "error": str(e)}
 
 
+# Seuils dumb-zone (Mo de transcript) — alignés sur bin/jarvis-context-watch.sh
+_CTX_LEVELS = [(16, 3), (11, 2), (6, 1)]
+# Caps memory-guard (cf. bin/jarvis-memory-guard.sh)
+_MEM_MAX_FILES = 14
+_MEM_SOFT_KB = 20
+_MEM_SOFT_KB_OVERRIDE = {"agents.md": 30}
+
+
+def collect_telemetry() -> dict:
+    """Télémétrie système : contextes (sessions live) + mémoire (HOT/caps/WARM/skills).
+
+    Agrège des signaux déjà collectés mais dispersés :
+      - active-sessions.json + taille du transcript JSONL → palier dumb-zone
+      - @imports de ~/.claude/CLAUDE.md → poids HOT réellement auto-loadé
+      - Memory/ top-level → distance aux caps du memory-guard
+      - jarvis-warm-hits.log → fréquence d'usage WARM/COLD
+      - Memory/auto/ → nb de skills auto-promus
+    """
+    # ---- Contextes : sessions live + taille transcript ----
+    contexts = []
+    try:
+        raw = json.loads(ACTIVE_SESSIONS_FILE.read_text()).get("sessions", [])
+    except Exception:
+        raw = []
+    for s in raw:
+        sid = s.get("session_id", "")
+        size = 0
+        if sid:
+            for p in CLAUDE_PROJECTS_DIR.glob(f"*/{sid}.jsonl"):
+                try:
+                    size = p.stat().st_size
+                except Exception:
+                    size = 0
+                break
+        mb = size / 1048576
+        level = next((lvl for thr, lvl in _CTX_LEVELS if mb >= thr), 0)
+        cwd = s.get("cwd", "")
+        contexts.append({
+            "session_id": sid,
+            "cwd": cwd,
+            "cwd_name": Path(cwd).name or cwd,
+            "started_at": s.get("started_at", ""),
+            "last_activity": s.get("last_activity", ""),
+            "transcript_mb": round(mb, 1),
+            "level": level,
+        })
+    contexts.sort(key=lambda x: x["transcript_mb"], reverse=True)
+
+    # ---- Mémoire HOT : poids réel via @imports de CLAUDE.md ----
+    hot_files, hot_total = [], 0
+    try:
+        for line in (HOME / ".claude" / "CLAUDE.md").read_text().splitlines():
+            line = line.strip()
+            if line.startswith("@/"):
+                fp = Path(line[1:])
+                if fp.exists():
+                    sz = fp.stat().st_size
+                    hot_total += sz
+                    hot_files.append({"name": fp.name, "kb": round(sz / 1024, 1)})
+    except Exception:
+        pass
+    hot_files.sort(key=lambda x: x["kb"], reverse=True)
+
+    # ---- Memory/ guard : nb fichiers vs cap + plus gros vs plafond ----
+    guard_files = []
+    if MEMORY_DIR.exists():
+        for f in sorted(MEMORY_DIR.iterdir()):
+            if f.is_file() and f.suffix == ".md" and f.name != "MEMORY.md":
+                cap = _MEM_SOFT_KB_OVERRIDE.get(f.name, _MEM_SOFT_KB)
+                kb = round(f.stat().st_size / 1024, 1)
+                guard_files.append({"name": f.name, "kb": kb, "cap_kb": cap, "over": kb > cap})
+    guard_count = len(guard_files)
+    guard_files.sort(key=lambda x: x["kb"], reverse=True)
+
+    # ---- WARM/COLD : fréquence d'usage observée ----
+    warm_hits, warm_last = {}, None
+    try:
+        for line in (LOG_DIR / "jarvis-warm-hits.log").read_text().splitlines():
+            parts = line.split(",")
+            if len(parts) >= 4:
+                warm_hits[parts[3]] = warm_hits.get(parts[3], 0) + 1
+                warm_last = parts[0]
+    except Exception:
+        pass
+    warm_top = [{"tier": t, "hits": n}
+                for t, n in sorted(warm_hits.items(), key=lambda x: x[1], reverse=True)[:6]]
+
+    # ---- Skills auto/ ----
+    auto_dir = MEMORY_DIR / "auto"
+    skills_auto = 0
+    if auto_dir.exists():
+        skills_auto = sum(1 for f in auto_dir.iterdir()
+                          if f.is_file() and f.suffix == ".md" and not f.name.startswith("_"))
+
+    return {
+        "contexts": contexts,
+        "memory": {
+            "hot_total_kb": round(hot_total / 1024, 1),
+            "hot_files": hot_files,
+            "guard_count": guard_count,
+            "guard_max": _MEM_MAX_FILES,
+            "guard_files": guard_files[:5],
+            "guard_over": sum(1 for f in guard_files if f["over"]),
+            "warm_top": warm_top,
+            "warm_last": warm_last,
+            "skills_auto": skills_auto,
+        },
+    }
+
+
 def promote_skill(filename: str) -> dict:
     """Déplace un skill de Memory/proposed/ vers Memory/."""
     if "/" in filename or ".." in filename or not filename.endswith(".md"):
@@ -1043,6 +1153,8 @@ class Handler(BaseHTTPRequestHandler):
                 fn = params.get("name", "")
                 proposed = params.get("proposed", "0") == "1"
                 self._json(read_memory_file(fn, in_proposed=proposed))
+            elif path == "/api/telemetry":
+                self._json(collect_telemetry())
             elif path == "/api/browser":
                 qs_dict = parse_qs(urlparse(self.path).query)
                 params = {k: v[0] for k, v in qs_dict.items()}
