@@ -93,7 +93,7 @@ Section dédiée dans `CLAUDE.md` qui force le développeur (ou Jarvis) à passe
 
 - Sites vitrine sans workflow métier (`portfolio-site`, `landing-site`, `agency-site`)
 - CRUD purs sans transitions interdites
-- Code Jarvis interne (`manin-jarvis`) — pas de client externe
+- Code Jarvis interne (`manin-control-room`) — pas de client externe
 - Sandbox `~/Documents/GIT DEV/` — expérimentations
 - Code en exploration / preuve de concept non destiné à la prod client
 

@@ -46,4 +46,4 @@ Légende :
 | Élément | Chemin |
 |---|---|
 | Script | `~/.local/bin/jarvis-status` (symlink → vault) |
-| Source canonique | `~/Documents/GIT PROD/manin-jarvis/bin/jarvis-status` |
+| Source canonique | `~/Documents/GIT PROD/manin-control-room/bin/jarvis-status` |

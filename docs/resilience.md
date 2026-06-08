@@ -38,7 +38,7 @@ C'est la version "auto-mémoire active" promise dans `feedback_action_proactive.
 
 ## 3. Plugin system V1 lite
 
-**Convention documentée dans** : `~/Documents/GIT PROD/manin-jarvis/plugins/README.md`
+**Convention documentée dans** : `~/Documents/GIT PROD/manin-control-room/plugins/README.md`
 
 **État V1** :
 - Structure documentée (squelette `plugins/example-skeleton/`)

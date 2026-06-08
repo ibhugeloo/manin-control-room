@@ -14,7 +14,7 @@
 set -uo pipefail
 
 API="${MOS_API:-http://127.0.0.1:${MOS_PORT:-3737}}"
-REPO="$HOME/Documents/GIT PROD/manin-jarvis"
+REPO="$HOME/Documents/GIT PROD/manin-control-room"
 MISSIONS_DIR="$REPO/share/missions"
 FORMAT_FILE="$MISSIONS_DIR/_FORMAT.md"
 

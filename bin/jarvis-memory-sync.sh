@@ -7,7 +7,7 @@ set -uo pipefail
 SRC_MEMORY="$HOME/Documents/Obsidian/vault/Claude/Memory"
 SRC_SESSIONS="$HOME/Documents/Obsidian/vault/Claude/Sessions"
 SRC_PROJECTS="$HOME/Documents/Obsidian/vault/Claude/Projects"
-REPO="$HOME/Documents/GIT PROD/manin-jarvis"
+REPO="$HOME/Documents/GIT PROD/manin-control-room"
 LOG="$HOME/.local/var/log/jarvis-memory-sync.log"
 
 mkdir -p "$(dirname "$LOG")"
@@ -35,7 +35,7 @@ mkdir -p "$REPO/memory" "$REPO/sessions" "$REPO/obsidian-projects" "$REPO/state"
 rsync -a --delete --exclude '.DS_Store' --exclude '*.swp' "$SRC_MEMORY/" "$REPO/memory/" 2>>"$LOG"
 rsync -a --delete --exclude '.DS_Store' --exclude '*.swp' "$SRC_SESSIONS/" "$REPO/sessions/" 2>>"$LOG"
 
-# Le sous-dossier Projects/ d'Obsidian contient les notes de synthèse projet (manin-jarvis.md, etc.)
+# Le sous-dossier Projects/ d'Obsidian contient les notes de synthèse projet (manin-control-room.md, etc.)
 # Utile pour l'index global, ne contient pas de secrets
 if [[ -d "$SRC_PROJECTS" ]]; then
   rsync -a --delete --exclude '.DS_Store' --exclude '*.swp' "$SRC_PROJECTS/" "$REPO/obsidian-projects/" 2>>"$LOG"

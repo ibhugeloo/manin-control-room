@@ -5,9 +5,9 @@ status: done
 opened_at: 2026-05-09
 closed_at: 2026-05-09
 deadline: 2026-06-15
-parent_dream: manin-jarvis
+parent_dream: manin-control-room
 deliverable: bin/jarvis-ui-server.py < 2000 lignes. Modules extraits dans bin/ui/{routes,renders,collectors}/ (ou structure équivalente proposée par refactor-cleaner). Tous les endpoints répondent comme avant — aucun champ JSON manquant, aucun rendu HTML cassé. /api/debug/cfg, /api/repos, /api/watchtower, /api/mos, /api/nightly, /api/sessions vérifiés en regression. Bootstrap idempotent post-refacto.
-tags: [refacto, manin-jarvis, dream-manin-jarvis]
+tags: [refacto, manin-control-room, dream-manin-control-room]
 ---
 
 # Refacto `jarvis-ui-server.py` — découper en modules
@@ -71,4 +71,4 @@ Le sub-agent `refactor-cleaner` est explicitement conçu pour ce travail (cf. sy
 **Pour Jarvis** :
 - Cette mission justifie une session Claude Code dédiée (3-5h estimées).
 - Sub-agent à invoquer : `refactor-cleaner` puis `nextjs-frontend-dev` pour les bouts HTML/CSS/JS si on les extrait.
-- Une fois closed, l'auto-critique `MOS-002` peut s'appliquer : *"qu'est-ce qui peut casser en prod ?"* → manin-jarvis n'est pas client mais le dashboard est mon outil principal de visu, donc à traiter avec sérieux.
+- Une fois closed, l'auto-critique `MOS-002` peut s'appliquer : *"qu'est-ce qui peut casser en prod ?"* → manin-control-room n'est pas client mais le dashboard est mon outil principal de visu, donc à traiter avec sérieux.

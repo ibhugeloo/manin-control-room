@@ -80,7 +80,7 @@ Si `$SHOULD_SAMPLE == 1` :
 **Inspiration** : audit Jarvis 2026-05-20 où 133 sessions ont été samplées (10) et 3 préférences méta promues (A1 tester avant d'acheter, A2 refactors bonus mid-session, A3 DELETE jamais via API en prod client) + 1 pattern méta (vérifier la source avant déléguer à sous-agent).
 
 ## 2. Lessons.md
-Lire `~/Documents/GIT PROD/manin-jarvis/lessons.md`. Pour chaque leçon documentée, vérifier dans les transcripts récents (`~/.claude/projects/*/*.jsonl`) si la règle a été appliquée ou violée **sur la fenêtre 5j**.
+Lire `~/Documents/GIT PROD/manin-control-room/lessons.md`. Pour chaque leçon documentée, vérifier dans les transcripts récents (`~/.claude/projects/*/*.jsonl`) si la règle a été appliquée ou violée **sur la fenêtre 5j**.
 
 **Heuristiques de détection des violations** :
 - Leçon #1 (spinning) : chercher 3+ appels MCP/recherche similaires dans une même session
@@ -161,7 +161,7 @@ done
 
 Évaluer (mêmes seuils qu'en mensuel — la cadence change, la rigueur non) :
 - **Taille totale** : > 25 fichiers = signal de dérive. > 30 = audit obligatoire.
-- **Sous-systèmes** dans `Memory/reference_jarvis_*.md` qui devraient migrer vers `manin-jarvis/docs/`.
+- **Sous-systèmes** dans `Memory/reference_jarvis_*.md` qui devraient migrer vers `manin-control-room/docs/`.
 - **Orphelins** : tout fichier absent de `MEMORY.md`.
 - **Doublons sémantiques** : 2+ fichiers traitent du même sujet.
 
@@ -454,7 +454,7 @@ Si tout RAS : ne pas en parler.
 
 ## Vérif fraîcheur `memory-sync` (repo canonique — décision 2026-05-27)
 
-Le repo GitHub `manin-jarvis` est la **source de vérité versionnée** ; le vault y est mirroré par `memory-sync` (23h30). Si le sync casse en silence, le repo canonique se périme vs le vault — et Leo, qui lit le repo en read-only, raisonne alors sur une doctrine périmée.
+Le repo GitHub `manin-control-room` est la **source de vérité versionnée** ; le vault y est mirroré par `memory-sync` (23h30). Si le sync casse en silence, le repo canonique se périme vs le vault — et Leo, qui lit le repo en read-only, raisonne alors sur une doctrine périmée.
 
 Le runner a **déjà calculé** le verdict de fraîcheur (déterministe, git log — ne pas le recalculer) :
 

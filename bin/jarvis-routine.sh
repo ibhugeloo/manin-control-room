@@ -74,7 +74,7 @@ export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/us
 # CRIT > 4j (sync probablement cassé → alerte Telegram).
 MEMORY_SYNC_FRESHNESS="(non vérifié — type != evaluation)"
 if [[ "$TYPE" == "evaluation" ]]; then
-  REPO="$HOME/Documents/GIT PROD/manin-jarvis"
+  REPO="$HOME/Documents/GIT PROD/manin-control-room"
   SYNC_TS=$(git -C "$REPO" log -1 --format=%ct --grep='^memory: sync' 2>/dev/null || true)
   if [[ -z "$SYNC_TS" ]]; then
     MEMORY_SYNC_FRESHNESS="🔴 memory-sync : aucun commit memory:sync trouvé dans le repo canonique. Vérifier le LaunchAgent com.example.jarvis.memory-sync + le log jarvis-memory-sync.log."

@@ -24,7 +24,7 @@ Système ajouté le 2026-05-05.
 jarvis-telegram-setup
 # 3. Suivre les étapes (envoyer /start au bot pour détecter le chat_id)
 # 4. Re-lancer le bootstrap pour activer le LaunchAgent du bot
-~/Documents/GIT PROD/manin-jarvis/bootstrap.sh
+~/Documents/GIT PROD/manin-control-room/bootstrap.sh
 ```
 
 ## Architecture

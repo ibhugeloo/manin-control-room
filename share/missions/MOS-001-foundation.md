@@ -6,7 +6,7 @@ status: done
 opened_at: 2026-05-09
 closed_at: 2026-05-09
 deadline: 2026-05-16
-parent_dream: manin-jarvis
+parent_dream: manin-control-room
 deliverable: Daemon FastAPI sur 127.0.0.1:3737 qui (1) reçoit les events des hooks Claude Code, (2) reflète les missions markdown en DB SQLite+vec0, (3) expose GET /missions et GET /events/recent. Widget Control Room "MOS" affiche missions actives.
 tags: [meta, mos, foundation]
 ---

@@ -1,6 +1,6 @@
 ---
 name: Jarvis deployment — bootstrap portable multi-Mac
-description: Stack Jarvis (brief, vault-search, session-recap, dashboard, telegram-bot, routines) packagée comme repo Git dans `~/Documents/GIT PROD/manin-jarvis/` avec un bootstrap.sh idempotent qui déploie/met à jour/désinstalle. Utiliser pour installer Jarvis sur une nouvelle machine.
+description: Stack Jarvis (brief, vault-search, session-recap, dashboard, telegram-bot, routines) packagée comme repo Git dans `~/Documents/GIT PROD/manin-control-room/` avec un bootstrap.sh idempotent qui déploie/met à jour/désinstalle. Utiliser pour installer Jarvis sur une nouvelle machine.
 type: reference
 ---
 
@@ -8,14 +8,14 @@ Système mis en place le 2026-05-05.
 
 ## Localisation
 
-**Source canonique de toute la stack Jarvis** : `~/Documents/GIT PROD/manin-jarvis/`
+**Source canonique de toute la stack Jarvis** : `~/Documents/GIT PROD/manin-control-room/`
 
 Comme le vault Obsidian est synchronisé entre les Mac, cette source est disponible partout. Le `bootstrap.sh` lit cette source et déploie localement.
 
 ## Structure du dossier Jarvis
 
 ```
-~/Documents/GIT PROD/manin-jarvis/
+~/Documents/GIT PROD/manin-control-room/
 ├── bootstrap.sh                      # script de déploiement
 ├── README.md
 ├── bin/
@@ -34,7 +34,7 @@ Comme le vault Obsidian est synchronisé entre les Mac, cette source est disponi
 ## Déploiement sur une nouvelle machine
 
 ```bash
-cd ~/Documents/GIT PROD/manin-jarvis
+cd ~/Documents/GIT PROD/manin-control-room
 ./bootstrap.sh
 ```
 

@@ -57,8 +57,8 @@ tail -f ~/.local/var/log/jarvis-routine.log
 ## Évolution
 
 Pour ajouter une nouvelle routine `<type>` :
-1. Créer le prompt `~/Documents/GIT PROD/manin-jarvis/share/routine-<type>-prompt.md`
-2. Créer le plist `~/Documents/GIT PROD/manin-jarvis/LaunchAgents/com.example.jarvis.routine-<type>.plist.template`
+1. Créer le prompt `~/Documents/GIT PROD/manin-control-room/share/routine-<type>-prompt.md`
+2. Créer le plist `~/Documents/GIT PROD/manin-control-room/LaunchAgents/com.example.jarvis.routine-<type>.plist.template`
 3. Re-lancer `bootstrap.sh` → tout est déployé automatiquement
 
 Le runner `jarvis-routine.sh` est générique : il lit `routine-$TYPE-prompt.md` selon l'argument reçu.

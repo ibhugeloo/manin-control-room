@@ -19,7 +19,7 @@ Solution : **mirror local** des pages stratégiques de Notion vers le vault. Une
 le boss désigne les pages à mirrorer en éditant :
 
 ```
-~/Documents/GIT PROD/manin-jarvis/notion-pages.txt
+~/Documents/GIT PROD/manin-control-room/notion-pages.txt
 ```
 
 Une URL ou un ID Notion par ligne. Les lignes vides et `#` sont ignorées.

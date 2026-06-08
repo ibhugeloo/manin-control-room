@@ -1,4 +1,4 @@
-# 🤖 manin-jarvis
+# 🤖 manin-control-room
 
 I run a small staff of AI assistants off a single brain. One builds in my terminal,
 one argues back from my phone, one runs my servers. The brain is a folder of Markdown —
@@ -325,8 +325,8 @@ add-ons** — open [`docs/`](./docs) only when you actually want them.
 ### For developers
 
 ```bash
-git clone https://github.com/ibhugeloo/manin-jarvis.git
-cd manin-jarvis
+git clone https://github.com/ibhugeloo/manin-control-room.git
+cd manin-control-room
 for f in memory/*.example.md;   do cp "$f" "${f%.example.md}.md"; done
 for f in config/*.example.yaml; do cp "$f" "${f%.example.yaml}.yaml"; done
 # Fill in memory/*.md + config/*.yaml, point @imports at your vault path:

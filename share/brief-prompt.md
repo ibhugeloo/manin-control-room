@@ -37,7 +37,7 @@ Charge en mémoire la mémoire transverse Jarvis avant de commencer :
 ## 3. Repos GIT PROD
 **Source de vérité** : `~/.local/bin/jarvis-status --json` (gère les wrappers de dossier et exclut `archives/` par convention). Ne **jamais** itérer `GIT PROD/*` à la main.
 
-**Liste blanche de supervision** : lire `~/Documents/GIT PROD/manin-jarvis/config/repos.yaml` → clé `supervised:`. Si la liste est **non-vide**, ne rapporter dans cette section QUE les repos dont le `name` y figure — ignorer tous les autres, même avec commits non pushés ou modifs locales. Si la liste est **vide ou absente**, rapporter tous les repos détectés (comportement historique).
+**Liste blanche de supervision** : lire `~/Documents/GIT PROD/manin-control-room/config/repos.yaml` → clé `supervised:`. Si la liste est **non-vide**, ne rapporter dans cette section QUE les repos dont le `name` y figure — ignorer tous les autres, même avec commits non pushés ou modifs locales. Si la liste est **vide ou absente**, rapporter tous les repos détectés (comportement historique).
 
 Pour chaque repo supervisé :
 - Commits locaux non pushés (`ahead` dans le JSON)

@@ -18,7 +18,7 @@
 
 set -uo pipefail
 
-JARVIS_SRC="$HOME/Documents/GIT PROD/manin-jarvis"
+JARVIS_SRC="$HOME/Documents/GIT PROD/manin-control-room"
 CONFIG_FILE="$JARVIS_SRC/config/coolify-autodeploy.yaml"
 STATE_DIR="$HOME/.local/var/jarvis-coolify-deployed"
 LOG="$HOME/.local/var/log/jarvis-coolify-autodeploy.log"

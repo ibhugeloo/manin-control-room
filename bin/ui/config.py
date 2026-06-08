@@ -12,7 +12,7 @@ HOME = Path.home()
 VAULT = HOME / "Documents" / "Obsidian" / "vault"
 BRIEF_DIR = VAULT / "Brief"
 SESSIONS_DIR = VAULT / "Claude" / "Sessions"
-JARVIS_SRC = HOME / "Documents" / "GIT PROD" / "manin-jarvis"
+JARVIS_SRC = HOME / "Documents" / "GIT PROD" / "manin-control-room"
 LOG_DIR = HOME / ".local" / "var" / "log"
 LOCAL_BIN = HOME / ".local" / "bin"
 

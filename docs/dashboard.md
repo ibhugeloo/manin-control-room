@@ -26,7 +26,7 @@ Si déjà actif, `jarvis-ui` réouvre simplement le navigateur sans relancer le 
 |---|---|
 | Wrapper CLI | `~/.local/bin/jarvis-ui` (symlink) |
 | Serveur Python | `~/.local/bin/jarvis-ui-server.py` (copie, TCC) |
-| Source canonique | `~/Documents/GIT PROD/manin-jarvis/bin/` |
+| Source canonique | `~/Documents/GIT PROD/manin-control-room/bin/` |
 | Logs serveur | `~/.local/var/log/jarvis-ui.log` |
 
 Pas de LaunchAgent — le dashboard est démarré à la demande pour ne pas laisser un port HTTP ouvert en permanence.

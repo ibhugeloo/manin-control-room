@@ -11,7 +11,7 @@ Persona : vouvoiement, "boss", factuel, **zéro invention**. Source MCP en éche
 
 ## Étape 1 — Registre
 
-Lire `~/Documents/GIT PROD/manin-jarvis/config/watchtower-projects.yaml`. Pour chaque projet sous `projects:` : `slug`, `name`, `client`, sous-sections `sentry`/`vercel`/`supabase`/`agency` (+ `enabled`), `red_thresholds`, `yellow_thresholds`, `ignore_supabase_advisors`. Si un argument projet est passé (`$ARGUMENTS`), ne traiter que celui-là.
+Lire `~/Documents/GIT PROD/manin-control-room/config/watchtower-projects.yaml`. Pour chaque projet sous `projects:` : `slug`, `name`, `client`, sous-sections `sentry`/`vercel`/`supabase`/`agency` (+ `enabled`), `red_thresholds`, `yellow_thresholds`, `ignore_supabase_advisors`. Si un argument projet est passé (`$ARGUMENTS`), ne traiter que celui-là.
 
 ## Étape 2 — Collecte par projet (sources en parallèle quand possible)
 

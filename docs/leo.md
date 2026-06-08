@@ -55,7 +55,7 @@ Leo est le **pair non-Claude de Jarvis** : un cerveau OpenAI GPT-5.5 auto-héber
 - Dialoguer avec le boss en direct via **Telegram** (allowlist = ID `<your-telegram-id>`) — c'est le **canal quotidien du boss sur son téléphone**.
 
 ### ❌ Ne peut pas / ne doit pas
-- **Écrire dans le sanctuaire Jarvis** : ni le vault Obsidian `vault/`, ni le repo `manin-jarvis`. Son accès à `jarvis-memory` est **strictement read-only**. Cf. `decisions.md` 2026-05-27.
+- **Écrire dans le sanctuaire Jarvis** : ni le vault Obsidian `vault/`, ni le repo `manin-control-room`. Son accès à `jarvis-memory` est **strictement read-only**. Cf. `decisions.md` 2026-05-27.
 - Accéder aux **MCP de Jarvis** (Notion, Supabase, Vercel, Sentry, Gmail, Calendar) ni au **filesystem du Mac** — il a ses propres outils côté LXC, séparés.
 - Mener une **action externe irréversible** (push, deploy, suppression, envoi, opération en masse) **sans validation explicite du boss** — même garde-fou que Jarvis (SOUL §2).
 

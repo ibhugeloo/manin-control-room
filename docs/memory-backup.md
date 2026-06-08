@@ -31,7 +31,7 @@ La mémoire transverse Jarvis (`Memory/*.md`, `Sessions/*.md`, `Projects/*.md`) 
 ~/.local/share/jarvis/mos.db                    ──→ state/mos.db (snapshot sqlite .backup)
                                                   │  (rsync -a --delete, exclusions secrets)
                                                   ↓
-                  ~/Documents/GIT PROD/manin-jarvis/
+                  ~/Documents/GIT PROD/manin-control-room/
                                                   ↓  git add + commit + push
                                   github.com/<your-user>/<your-jarvis> (privé)
                                                   ↓  git pull (read-only, deploy key)
@@ -58,11 +58,11 @@ Garde-fous : **pas de secrets, pas de carton** (ne pas tout dumper indiscriminé
 
 ```bash
 # 1. Cloner
-git clone git@github.com:<your-user>/<your-jarvis>.git "$HOME/Documents/GIT PROD/manin-jarvis"
+git clone git@github.com:<your-user>/<your-jarvis>.git "$HOME/Documents/GIT PROD/manin-control-room"
 
 # 2. Restaurer la mémoire dans le vault Obsidian
 VAULT="$HOME/Documents/Obsidian/vault/Claude"
-JARVIS="$HOME/Documents/GIT PROD/manin-jarvis"
+JARVIS="$HOME/Documents/GIT PROD/manin-control-room"
 mkdir -p "$VAULT/Memory" "$VAULT/Sessions" "$VAULT/Projects"
 rsync -a "$JARVIS/memory/" "$VAULT/Memory/"
 rsync -a "$JARVIS/sessions/" "$VAULT/Sessions/"
@@ -94,7 +94,7 @@ tail -f ~/.local/var/log/jarvis-memory-sync.log
 launchctl unload ~/Library/LaunchAgents/com.example.jarvis.memory-sync.plist
 
 # Remote
-cd ~/Documents/GIT\ PROD/manin-jarvis
+cd ~/Documents/GIT\ PROD/manin-control-room
 git remote -v   # → origin = https://github.com/<your-user>/<your-jarvis>.git
 ```
 

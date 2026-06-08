@@ -19,7 +19,7 @@ fi
 
 if [[ ! -f "$SCRIPT" ]]; then
   echo "❌ Script Python manquant : $SCRIPT" >&2
-  echo "   Relancer : ~/Documents/GIT\\ PROD/manin-jarvis/bootstrap.sh" >&2
+  echo "   Relancer : ~/Documents/GIT\\ PROD/manin-control-room/bootstrap.sh" >&2
   exit 1
 fi
 

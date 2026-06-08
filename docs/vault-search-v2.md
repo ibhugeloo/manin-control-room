@@ -55,7 +55,7 @@ vault-search-v2 "<question>" --json     # sortie JSON pour pipe
 
 ## Indexation
 
-- **Sources** : vault Obsidian complet (sauf `.obsidian/`, `.trash/`, `Brief/`) + `manin-jarvis/` (lessons.md, README, prompts) hors `memory/`, `sessions/`, `obsidian-projects/` (mirrors qui causeraient des doublons).
+- **Sources** : vault Obsidian complet (sauf `.obsidian/`, `.trash/`, `Brief/`) + `manin-control-room/` (lessons.md, README, prompts) hors `memory/`, `sessions/`, `obsidian-projects/` (mirrors qui causeraient des doublons).
 - **Chunking** : par paragraphe (`\n\n`), cap target 600 chars, max 1500. Frontmatter YAML strippé.
 - **Embedding** : `multilingual-e5-small` (384 dims, FR/EN, prefix `passage:` pour docs et `query:` pour questions).
 - **Incrémental** : la cron quotidienne ne réindexe que les fichiers dont `mtime` ET `hash` ont changé (évite les `touch` parasites).

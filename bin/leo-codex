@@ -33,7 +33,7 @@ Options:
 
 Variables d'env:
   LEO_PROMPT_FILE      Chemin du system prompt Leo
-                       (défaut: manin-jarvis/share/leo/system-prompt.md)
+                       (défaut: manin-control-room/share/leo/system-prompt.md)
 
 Exemples:
   leo "vaut-il mieux Postgres ou SQLite pour ce cas ?"

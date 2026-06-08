@@ -21,7 +21,7 @@ def _default_missions_dir() -> Path:
     Order of resolution:
       1. env var MOS_MISSIONS_DIR (absolute path)
       2. <repo>/share/missions if this module is loaded from the source repo
-      3. ~/Documents/GIT PROD/manin-jarvis/share/missions (deployed default)
+      3. ~/Documents/GIT PROD/manin-control-room/share/missions (deployed default)
     """
     env = os.environ.get("MOS_MISSIONS_DIR")
     if env:
@@ -29,7 +29,7 @@ def _default_missions_dir() -> Path:
     repo_local = Path(__file__).resolve().parent.parent / "share" / "missions"
     if repo_local.exists():
         return repo_local
-    return Path.home() / "Documents" / "GIT PROD" / "manin-jarvis" / "share" / "missions"
+    return Path.home() / "Documents" / "GIT PROD" / "manin-control-room" / "share" / "missions"
 
 
 MISSIONS_DIR = _default_missions_dir()

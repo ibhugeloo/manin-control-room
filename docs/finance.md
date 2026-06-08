@@ -12,12 +12,12 @@ Module de **pilotage** (pas de production) du plugin Claude Code `finance-jarvis
 
 **Séparation claire** :
 - `finance-jarvis/` (repo distinct, plugin Claude Code) = la mécanique d'analyse, `portfolio.yaml`, slash commands
-- `manin-jarvis/` (ce module) = le pilote qui déclenche l'analyse au bon moment
+- `manin-control-room/` (ce module) = le pilote qui déclenche l'analyse au bon moment
 
 ## Architecture
 
 ```
-~/Documents/GIT PROD/manin-jarvis/
+~/Documents/GIT PROD/manin-control-room/
 ├── bin/jarvis-finance.sh                      # orchestrateur (déployé vers ~/.local/bin/)
 ├── share/finance-prompt.md                    # prompt LLM (déployé vers ~/.local/share/jarvis/)
 ├── config/finance.yaml                        # calendrier earnings (lu en place)
@@ -63,7 +63,7 @@ jarvis-finance.sh
 
 Quand une société du portefeuille annonce sa date d'earnings (sur son site IR ou via la presse) :
 
-1. Ouvrir `~/Documents/GIT PROD/manin-jarvis/config/finance.yaml`
+1. Ouvrir `~/Documents/GIT PROD/manin-control-room/config/finance.yaml`
 2. Ajouter sous `earnings_calendar:` :
 
 ```yaml
@@ -73,7 +73,7 @@ Quand une société du portefeuille annonce sa date d'earnings (sur son site IR 
   time: AMC                 # BMO | AMC | intraday
 ```
 
-3. Commit + push (le repo `manin-jarvis` est versionné)
+3. Commit + push (le repo `manin-control-room` est versionné)
 4. Le prochain run à 6h00 (ou immédiat via `~/.local/bin/jarvis-finance.sh`) prendra l'entrée en compte.
 
 **Pas besoin de modifier le yaml manuellement après l'analyse** — l'état "déjà analysé" est déduit de la présence du fichier `<TICKER>-<DATE>.md` dans Obsidian. Le yaml peut donc rester avec toutes les entrées historiques sans grossir l'analyse (tout ce qui a déjà une note est skippé silencieusement).
@@ -91,7 +91,7 @@ Exécution synchrone, écriture dans `~/.local/var/log/jarvis-finance.log`. Idem
 Comme tous les modules Jarvis, déployer via :
 
 ```bash
-cd ~/Documents/GIT\ PROD/manin-jarvis
+cd ~/Documents/GIT\ PROD/manin-control-room
 ./bootstrap.sh
 ```
 
@@ -133,4 +133,4 @@ V2 possible : ajouter un 2e fire à 22h00 RE pour capturer les earnings du jour.
 - `~/Documents/GIT DEV/finance/finance-jarvis/README.md` — le plugin Claude Code et ses slash commands
 - `Obsidian/vault/Files/investment_agent.md` — philosophie d'investissement Carlson/Delmas
 - `Obsidian/vault/Claude/Memory/profil.md` (section Finance) — positions, stratégie, broker
-- `~/Documents/GIT PROD/manin-jarvis/docs/watchtower.md` — module sœur (pattern identique pour les projets clients)
+- `~/Documents/GIT PROD/manin-control-room/docs/watchtower.md` — module sœur (pattern identique pour les projets clients)

@@ -12,7 +12,7 @@ GIT_PROD="$HOME/Documents/GIT PROD"
 EXCLUDE_DIRS=(archives)
 
 # Config catégorisation (filesystem flat, séparation logique)
-REPOS_CONFIG="$HOME/Documents/GIT PROD/manin-jarvis/config/repos.yaml"
+REPOS_CONFIG="$HOME/Documents/GIT PROD/manin-control-room/config/repos.yaml"
 
 JSON_MODE=0
 [[ "${1:-}" == "--json" ]] && JSON_MODE=1
