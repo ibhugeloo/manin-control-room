@@ -5,7 +5,7 @@
 <h1 align="center">Manin Control Room</h1>
 
 <p align="center">
-  <strong>A personal AI butler engine — one brain, many runtimes, zero hidden LLM calls.</strong><br />
+  <strong>A reliable AI agent on top of an LLM — durable Markdown memory, eval-tested guardrails, zero hidden LLM calls.</strong><br />
   The memory is a Markdown vault, the canon is git, the model runs only when I say so.
 </p>
 
