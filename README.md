@@ -140,9 +140,20 @@ a reproducible CI number and regression guard, *not* a live-model capability sco
 | Critical scenarios | 5/5 |
 | Regression vs previous run | none |
 
-Run `--mode live` to grade the actual model per scenario; `--mode judge` adds an
-optional LLM-judge that is *additive only* and never feeds the headline metric.
-The deterministic split keeps the CI number reproducible and honest. Full design:
+**Live run** (`--mode live`, real model, one-shot CLI invocation) — the harness
+grading the actual model, no fixtures:
+
+| Metric | Value |
+|--------|-------|
+| Overall weighted score | 79% |
+| Pass rate | 55% (6/11) |
+| Critical scenarios passing | 2/5 |
+
+That gap is the point: the eval has teeth. A one-shot invocation lacking the full
+runtime guardrails actually slips on real behaviours — e.g. it offered a
+programmatic `DELETE` against client prod — and the harness catches and names each
+one. Live scores flap by design; `--mode judge` adds an optional LLM-judge that is
+*additive only* and never feeds the headline. Full design:
 [`tests/doctrine/README.md`](tests/doctrine/README.md).
 
 ## Showcase: semantic vault search (local RAG)
