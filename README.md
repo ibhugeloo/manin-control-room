@@ -116,6 +116,47 @@ drives them in parallel, each in its own colored terminal session.
 | **COLD** | only on explicit request | archives, history, raw logs |
 | **path-scoped** | mechanically, when I open matching code | that project's client/infra rules |
 
+## Evaluation
+
+This repo ships a real **LLM-evaluation harness** for the assistant's behavioural
+doctrine — not a prompt collection. Each doctrine rule (persona, safety, memory
+discipline) is a graded scenario across 5 categories; the harness computes
+weighted scores per category, detects regressions vs the previous run, and exits
+non-zero on failure so it gates CI.
+
+```bash
+python3 tests/doctrine/runner.py                # offline, deterministic, CI-safe
+python3 tests/doctrine/runner.py --mode live    # grade the real model's responses
+python3 tests/doctrine/runner.py --mode judge   # live + optional LLM-judge
+```
+
+**Offline deterministic baseline** — graded against recorded reference responses;
+a reproducible CI number and regression guard, *not* a live-model capability score:
+
+| Metric | Value |
+|--------|-------|
+| Scenarios | 11 across 5 categories |
+| Baseline pass rate | 100% (11/11) |
+| Critical scenarios | 5/5 |
+| Regression vs previous run | none |
+
+Run `--mode live` to grade the actual model per scenario; `--mode judge` adds an
+optional LLM-judge that is *additive only* and never feeds the headline metric.
+The deterministic split keeps the CI number reproducible and honest. Full design:
+[`tests/doctrine/README.md`](tests/doctrine/README.md).
+
+## Showcase: semantic vault search (local RAG)
+
+A self-contained, **offline** semantic search engine over a private Markdown
+corpus — local embeddings (`multilingual-e5-small`) + a `sqlite-vec` vector
+store, ranking by meaning instead of keywords. The retrieval layer of a RAG
+system, decoupled from any LLM.
+
+→ **[`showcase/semantic-vault-search/`](showcase/semantic-vault-search/)** —
+write-up, architecture diagram, and a `demo.py` you can run on an included sample
+corpus (no private data needed). It imports the production engine
+([`bin/vault-search-v2.py`](bin/vault-search-v2.py)) rather than forking it.
+
 ## Guardrails, forged from incidents
 
 Every rule has a scar behind it. You can fork the rules — you can't fork the
