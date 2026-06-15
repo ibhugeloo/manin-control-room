@@ -47,6 +47,19 @@ Three things make this a proper harness rather than a script:
    Categories aggregate scenario scores; severity (`critical`/`major`/`minor`)
    lets us track whether the *safety-critical* rules specifically hold.
 
+4. **Operational metrics: latency + (rough) cost.** Every run records measured
+   wall-clock time per scenario and a total/avg/slowest in both reports. In
+   `live`/`judge` mode it also prints a **rough** token + USD estimate.
+
+**Cost estimate is deliberately rough — not a bill.** `claude -p` does not
+surface token usage on stdout, so cost is *approximated* from character length:
+`tokens ≈ chars / chars-per-token`, `usd ≈ tokens × price-per-1M-token`. Both
+assumptions are documented at the top of `runner.py` and overridable
+(`--chars-per-token`, `--price-per-mtok`); the default price is a placeholder
+mid-range blended rate. Every cost line is labelled *order-of-magnitude*. The
+offline default has near-zero cost (it reads a local fixture), so cost is only
+emitted for `live`/`judge`.
+
 **Deterministic vs LLM-judged (honesty note):** the overall score and pass rate
 are 100% deterministic (regex assertions over fixtures or live output). The LLM
 judge is a *secondary, optional* signal shown alongside — it never feeds the
@@ -118,6 +131,9 @@ python3 tests/doctrine/runner.py --mode live
 # Live + LLM-judge on scenarios that have a rubric
 python3 tests/doctrine/runner.py --mode judge
 
+# Tune the rough cost estimate to the model you actually run (live/judge)
+python3 tests/doctrine/runner.py --mode live --chars-per-token 4 --price-per-mtok 6
+
 # Full report as JSON on stdout
 python3 tests/doctrine/runner.py --json
 
@@ -155,6 +171,50 @@ Keep the suite a **reliable signal, not a noisy checklist**: assertions should
 catch real doctrine violations, not punish doctrine-correct phrasing. When an
 assertion false-positives on a correct answer (e.g. matching a negated word),
 tighten the regex rather than weaken the safety check.
+
+---
+
+## LLM-judge: calibration & limits (honest)
+
+`--mode judge` adds an LLM-graded score on scenarios that carry a `rubric:`.
+This section is deliberately candid about what that signal is and is **not**,
+because an over-trusted judge is worse than no judge.
+
+- **Additive only — never the headline.** The judge score is reported in a
+  separate column alongside the deterministic result. It never feeds the overall
+  score, the pass rate, the per-category metrics, the critical-scenario count, or
+  the CI exit code. Those are 100% deterministic (regex assertions over fixtures
+  or live output). If the judge is unreachable, the deterministic headline stands
+  unchanged and the judge column reports `unavailable`.
+- **NOT calibrated against human annotations.** There is currently **no
+  human-labelled gold set** to measure the judge against. We have not computed
+  agreement (e.g. Cohen's κ / correlation) between judge scores and human
+  verdicts. So the judge's *numbers are not validated* — treat them as a rough
+  second opinion, not a measured accuracy.
+- **Known failure modes / risks:**
+  - *Sycophancy / plausibility bias* — the judge can score a fluent,
+    plausible-but-doctrinally-wrong answer highly (it grades against a prose
+    rubric, not the hard rule).
+  - *Self-preference* — judge and assistant may share a model family, so the
+    judge can over-reward outputs that match its own style.
+  - *Rubric drift* — a vague rubric lets the judge reward "well-written" over
+    "doctrine-correct"; rubric quality bounds judge quality.
+  - *Non-determinism* — the same response can earn different judge scores across
+    runs; not reproducible the way the offline grade is.
+  - *Prompt-injection surface* — a response that addresses the judge could skew
+    its verdict.
+- **Mitigation (what keeps the suite honest):** the **deterministic assertions
+  carry the headline**; the judge is strictly **advisory**. The safety-critical
+  behaviour (no-DELETE-on-prod, confirm-before-irreversible, anti-bluff…) is
+  gated by `regex` / `not_regex` assertions that cannot be talked around. The
+  judge's role is only to flag "well-formed but beside the point" answers that
+  pass the keyword checks — a hint to tighten an assertion or a rubric, not a
+  gate. Until a human-labelled calibration set exists, no decision should rest on
+  the judge number alone.
+- **To make the judge trustworthy later:** build a small human-annotated set
+  (compliant + violating responses per scenario), measure judge↔human agreement,
+  and only then consider letting the judge gate anything — and even then, only
+  non-critical categories.
 
 ---
 
