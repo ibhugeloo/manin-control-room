@@ -52,6 +52,17 @@ fi
   echo "[$(date)] SessionEnd — session=$SESSION_ID reason=$REASON cwd=$CWD"
 } >> "$LOG"
 
+# Garde-fou : run de harness d'éval (tests/doctrine/runner.py pose JARVIS_HARNESS_RUN=1).
+# On ne génère NI récap, NI skill, NI observation : ce sont des scénarios synthétiques,
+# pas du travail organique. Sans ça, chaque run d'éval gonfle Sessions/ d'artefacts et
+# pollue observations.md d'entrées dupliquées (eval 2026-06-15 : 340 -> 852 lignes ;
+# avis Leo 2026-06-19 — frontière test/réel = priorité 1). La session a déjà été
+# désinscrite du registre ci-dessus.
+if [[ "${JARVIS_HARNESS_RUN:-0}" == "1" ]]; then
+  echo "[$(date)] Harness run (JARVIS_HARNESS_RUN=1) — skip récap/observation/skill" >> "$LOG"
+  exit 0
+fi
+
 # Garde-fou : opt-out par session — si un flag ~/.jarvis/recap-skip/<id> existe,
 # on ne génère NI n'écrit NI ne push cette session (ex : session contenant un
 # secret collé en clair qu'on ne veut pas voir partir dans Sessions/ + Notion +
@@ -381,6 +392,29 @@ t = re.sub(r'[^a-z0-9 -]', '', t)
 t = re.sub(r'\s+', '-', t).strip('-')
 print(t[:50])" 2>/dev/null)
 [[ -z "$TOPIC" ]] && TOPIC="session"
+
+# ---------------------------------------------------------------------------
+# Garde-fou : sessions de TEST doctrinal / self-test / vides → ni fichier
+# Sessions/, ni push Notion (sinon elles déversent du bruit dans Sessions/ et
+# le bac Notion).
+#
+# Le marqueur env JARVIS_HARNESS_RUN (vérifié plus haut) ne couvre QUE le runner
+# tests/doctrine/runner.py. Les gauntlets doctrinaux joués en INTERACTIF (le boss
+# teste les garde-fous en direct, reason=prompt_input_exit) et les self-tests
+# launchd (PONG, "auto-test") n'ont pas ce flag → on les attrape ici, sur le
+# titre généré par Haiku.
+#
+# Volontairement STRICT (zéro faux positif > exhaustivité) : pas de "Refus"
+# (un vrai sujet peut légitimement porter sur un refus). Le transcript reste
+# dans le stockage Claude — rien de réel n'est perdu, juste pas de recap/push.
+# Étendre le motif si un type de test récurrent passe encore.
+# ---------------------------------------------------------------------------
+RAW_TITLE=$(printf '%s' "$RECAP" | grep -m1 '^# Session' | sed 's/^# Session [0-9-]* — //')
+if printf '%s' "$RAW_TITLE" | grep -qiE 'test (doctrinal|doctrine|comprehension|compréhension|instruction|de reaction|de réaction|post-durcissement|d.obeissance|d.obéissance|acces|accès)|auto-test|validation (soul|agents) §|\(pong\)|launchd confirmation|message offline|aucun contenu|non-demarree|non-démarrée|sans substance'; then
+  echo "[$(date)] Skip — session test/self-test/vide (titre: '$RAW_TITLE') — pas de recap/push" >> "$LOG"
+  WORKER_STATUS="SKIP_TEST_TITLE"
+  exit 0
+fi
 
 OUTPUT_FILE="$SESSIONS_DIR/${DATE}-${TIMESTAMP}-${SHORT_ID}-${TOPIC}.md"
 
